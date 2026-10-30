@@ -1,5 +1,10 @@
 mod resolver;
 
 fn main() {
-    resolver::resolve();
+
+    let search: &str = "ksdjhfkjshfsjdfh";
+
+    let output: String = resolver::resolve(search).to_string();
+
+    println!("{search} returns: {output}")
 }
