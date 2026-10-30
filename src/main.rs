@@ -1,3 +1,5 @@
+mod resolver;
+
 fn main() {
-    println!("Hello, world!");
+    resolver::resolve();
 }
