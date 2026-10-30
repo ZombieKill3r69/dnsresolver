@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 hickory-resolver = "*"
+tokio = "1.54.1"
