@@ -37,5 +37,6 @@ pub fn resolve(lookup_query: &str) -> IpAddr {
 
     let address: IpAddr = response.iter().next().expect("no addresses returned!");
 
+    // We return the final adresses back to the main function
     address
 }
