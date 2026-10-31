@@ -15,8 +15,8 @@ pub fn resolve(lookup_query: &str) -> IpAddr {
 
     let dns_server: ServerGroup<'_> = ServerGroup {
         ips: &vec![
-            IpAddr::V4(Ipv4Addr::new(1, 1, 1, 1)),
-            IpAddr::V4(Ipv4Addr::new(1, 0, 0, 1)),
+            IpAddr::V4(Ipv4Addr::new(1, 1, 1, 1)),  // Cloudflare Primary v4
+            IpAddr::V4(Ipv4Addr::new(1, 0, 0, 1)),  // Cloudflare Secondary v4
             IpAddr::V6(Ipv6Addr::new(0x2606, 0x4700, 0x4700, 0, 0, 0, 0, 0x1111)),
             IpAddr::V6(Ipv6Addr::new(0x2606, 0x4700, 0x4700, 0, 0, 0, 0, 0x1001)),
         ],
