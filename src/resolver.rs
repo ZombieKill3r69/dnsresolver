@@ -31,20 +31,11 @@ pub fn resolve(lookup_query: &str) -> IpAddr {
     TokioRuntimeProvider::default()
     ).build().unwrap();
 
-    let lookup_future = resolver.lookup_ip(lookup_query);
+    let lookup_future = resolver.ipv4_lookup(lookup_query);
 
-    let response = io_loop.block_on(lookup_future);
+    let response: hickory_resolver::lookup_ip::LookupIp = io_loop.block_on(lookup_future).unwrap().into();
 
-    // Check if an error is given from the DNS server
-    let checked_response: hickory_resolver::lookup_ip::LookupIp = match response {
-        Ok(resp) => resp,                     // success – use the value
-        Err(_e) => {
-            println!("no address returned! '{lookup_query}' did not return a valid address");
-            return IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0));
-        }
-    };
-    
-    let address: IpAddr = checked_response.iter().next().expect("no address returned!");
+    let address: IpAddr = response.iter().next().expect("no addresses returned!");
 
-    return address;
+    address
 }
