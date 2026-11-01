@@ -11,7 +11,7 @@ use hickory_resolver::{
     config::ServerGroup,
 };
 
-pub fn resolve(lookup_query: &str) -> IpAddr {
+pub fn resolve(lookup_query: &String) -> IpAddr {
 
     let dns_server: ServerGroup<'_> = ServerGroup {
         ips: &vec![
