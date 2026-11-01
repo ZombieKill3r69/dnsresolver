@@ -7,10 +7,13 @@ pub struct Config {
 
 pub fn parse_config(mut args: Vec<String>) -> Config {
 
-    let flags: Vec<char> = (detect_flags(&args).0).chars().skip(1).collect();
-    dbg!(flags);
     // Remove flags from agruments
-    args.remove(detect_flags(&args).1);
+    if detect_flags(&args).is_flags {
+        let flags: Vec<char> = (detect_flags(&args).result)
+            .unwrap().chars()
+            .skip(1).collect();
+        args.remove((detect_flags(&args).position).unwrap());
+    }
 
     Config {
         query:      args[0].clone(),
@@ -18,16 +21,30 @@ pub fn parse_config(mut args: Vec<String>) -> Config {
     }
 }
 
-// Returns the index of command line flags
-fn detect_flags(args: &Vec<String>) -> (String, usize) {
+struct FlagStatus {
+    is_flags:   bool,
+    position:   Option<usize>,
+    result:     Option<String>,
+}
 
+// Returns the index of command line flags
+fn detect_flags(args: &Vec<String>) -> FlagStatus {
+    
     for (i, target_index) in args.iter().enumerate() {
 
-        dbg!(i);
         if target_index.starts_with('-') {
 
-            return (args[i].clone(), i);
+            return FlagStatus {
+                is_flags: true, 
+                position: Some(i), 
+                result: Some(args[i].clone()),
+            };
         }
     }
-    (String::new(), args.len())
+
+    return FlagStatus {
+        is_flags: false, 
+        position: None, 
+        result: None,
+    }
 }
