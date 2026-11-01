@@ -5,6 +5,7 @@ pub struct Config {
 pub fn parse_config(args: &[String]) -> Config {
     
     Config {
-        query: args[1].clone()
+        query: args[0].clone()
+        
     }
 }

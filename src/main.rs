@@ -5,12 +5,12 @@ mod resolver;
 
 fn main() {
 
-    let search: &str = "example.com";
     let args: Vec<String> = env::args().collect();
+    let user_args: &[String] = &args[1..];
 
-    let config: cli::Config= cli::parse_config(&args);
+    let config: cli::Config = cli::parse_config(user_args);
 
     let output: String = resolver::resolve(&config.query).to_string();
 
-    println!("{search} returns: {output}");
+    println!("{} returns: {}", config.query, output);
 }
