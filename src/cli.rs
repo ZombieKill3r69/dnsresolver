@@ -2,22 +2,25 @@
 
 pub struct Config {
     pub query:      String,
-    //pub ip_ver:     u8,
+    pub ip_ver:     u8,
 }
 
 pub fn parse_config(mut args: Vec<String>) -> Config {
 
+    let mut flags: Vec<char> = Vec::new();
+
     // Remove flags from agruments
     if detect_flags(&args).is_flags {
-        let flags: Vec<char> = (detect_flags(&args).result)
-            .unwrap().chars()
-            .skip(1).collect();
+        flags = (detect_flags(&args).result)
+        .unwrap().chars()
+        .skip(1).collect();
         args.remove((detect_flags(&args).position).unwrap());
     }
-
+    
+    
     Config {
         query:      args[0].clone(),
-        //ip_ver:     0,
+        ip_ver:     get_ip_ver(&flags),
     }
 }
 
@@ -42,9 +45,19 @@ fn detect_flags(args: &Vec<String>) -> FlagStatus {
         }
     }
 
+    // Return empty values if nothing is found
     return FlagStatus {
-        is_flags: false, 
-        position: None, 
+        is_flags: false,
+        position: None,
         result: None,
+    }
+}
+
+fn get_ip_ver(user_flags: &Vec<char>) -> u8 {
+
+    if user_flags.contains(&'6') {
+        return 6;
+    } else {
+        return 4;
     }
 }
