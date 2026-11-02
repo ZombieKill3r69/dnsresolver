@@ -11,7 +11,10 @@ use hickory_resolver::{
     config::ServerGroup,
 };
 
-pub fn resolve(lookup_query: &String) -> IpAddr {
+// Get Config struct from cli_manager
+use crate::cli_manager::Config;
+
+pub fn resolve(lookup_config: Config) -> IpAddr {
 
     let dns_server: ServerGroup<'_> = ServerGroup {
         ips: &vec![
@@ -31,7 +34,7 @@ pub fn resolve(lookup_query: &String) -> IpAddr {
     TokioRuntimeProvider::default()
     ).build().unwrap();
 
-    let lookup_future = resolver.ipv4_lookup(lookup_query);
+    let lookup_future = resolver.ipv4_lookup(lookup_config.query);
 
     let response: hickory_resolver::lookup_ip::LookupIp = io_loop.block_on(lookup_future).unwrap().into();
 
