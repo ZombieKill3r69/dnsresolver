@@ -74,7 +74,7 @@ fn display_help_info() {
     output.push_str("  options:\n");
     output.push_str("    -4, Return Ipv4 (default)\n");
     output.push_str("    -6, Return Ipv6\n");
-    output.push_str("    -h, Show this help text\n");
+    output.push_str("    -h, Show this help text");
 
     print!("{}", output); 
 
