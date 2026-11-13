@@ -1,6 +1,6 @@
 use std::env;
 
-mod cli_manager;
+mod cli;
 mod resolver;
 
 pub struct Config {
