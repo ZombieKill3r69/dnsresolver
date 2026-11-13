@@ -5,6 +5,12 @@ pub struct Config {
     pub ip_ver:     u8,
 }
 
+struct FlagStatus {
+    is_flags:   bool,
+    position:   Option<usize>,
+    result:     Option<String>,
+}
+
 pub fn parse_config(mut args: Vec<String>) -> Config {
 
     let mut flags: Vec<char> = Vec::new();
@@ -25,12 +31,6 @@ pub fn parse_config(mut args: Vec<String>) -> Config {
         query:      args[0].clone(),
         ip_ver:     find_ip_version(&flags),
     };
-}
-
-struct FlagStatus {
-    is_flags:   bool,
-    position:   Option<usize>,
-    result:     Option<String>,
 }
 
 // Returns the index of command line flags
