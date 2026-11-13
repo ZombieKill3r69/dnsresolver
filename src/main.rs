@@ -17,3 +17,4 @@ fn main() {
     // Output
     println!("{} returns: {}", config.query, output);
 }
+

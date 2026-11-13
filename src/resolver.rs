@@ -40,3 +40,4 @@ pub fn resolve(lookup_query: &String) -> IpAddr {
     // We return the final adresses back to the main function
     address
 }
+
