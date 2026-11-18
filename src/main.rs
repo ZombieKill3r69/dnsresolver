@@ -18,9 +18,6 @@ fn main() {
 
     let config: cli::Config = cli::parse_config(args);
 
-    // Confirm that query has been identified
-    print!("{} ", config.query);
-
     let output: String = resolver::resolve(config).to_string();
 
     // Output
