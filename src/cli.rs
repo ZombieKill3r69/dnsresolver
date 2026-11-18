@@ -3,6 +3,7 @@ use std::process::exit;
 pub struct Config {
     pub query:      String,
     pub ip_ver:     u8,
+    pub depth:      bool,
 }
 
 struct FlagStatus {
@@ -27,10 +28,11 @@ pub fn parse_config(mut args: Vec<String>) -> Config {
         display_help_info();
     }
 
-    return Config {
+    Config {
         query:      args[0].clone(),
         ip_ver:     find_ip_version(&flags),
-    };
+        depth:      get_lookup_depth(&flags),
+    }
 }
 
 // Returns the index of command line flags
@@ -58,26 +60,32 @@ fn detect_flags(args: &Vec<String>) -> FlagStatus {
 fn find_ip_version(flags: &Vec<char>) -> u8 {
 
     if flags.contains(&'6') {
-        println!("Using ipv6");
         return 6;
     } else {
-        println!("Using ipv4");
         return 4;
     }
+}
+
+fn get_lookup_depth(flags: &Vec<char>) -> bool {
+
+    if flags.contains(&'d') {
+        return true;
+    }
+
+    return false;
 }
 
 fn display_help_info() {
 
     let mut output: String = String::new();
 
-    output.push_str("usage: rresolve [options] query_address\n");
-    output.push_str("  options:\n");
-    output.push_str("    -4, Return Ipv4 (default)\n");
-    output.push_str("    -6, Return Ipv6\n");
-    output.push_str("    -h, Show this help text");
+    output.push_str("Usage - dnsreolver search_address [options]\n");
+    output.push_str("  Options:\n");
+    output.push_str("    -4, use ipv4 (default)\n");
+    output.push_str("    -6, use ipv6\n");
+    output.push_str("    -h, display help text\n");
 
-    print!("{}", output); 
+    print!("{}", output);
 
-    exit(0x0100)
+    exit(0x0010)
 }
-

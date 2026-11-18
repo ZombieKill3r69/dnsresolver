@@ -12,9 +12,9 @@ use hickory_resolver::{
 };
 
 // Get Config struct from cli_manager
-use crate::cli_manager::Config;
+use crate::cli::Config;
 
-pub fn resolve(lookup_config: Config) -> IpAddr {
+pub fn resolve(mut lookup_config: Config) -> IpAddr {
 
     let dns_server: ServerGroup<'_> = ServerGroup {
         ips: &vec![
@@ -27,18 +27,31 @@ pub fn resolve(lookup_config: Config) -> IpAddr {
         path: &"/dns-query".to_string(),
     };
 
+    if lookup_config.depth == false {
+        lookup_config.query.push_str(".");
+    }
+    println!("{}", lookup_config.query);
+
     let io_loop: Runtime = Runtime::new().unwrap();
 
     let resolver: Resolver<TokioRuntimeProvider> = Resolver::builder_with_config(
-    ResolverConfig::udp_and_tcp(&dns_server),
-    TokioRuntimeProvider::default()
+        ResolverConfig::udp_and_tcp(&dns_server),
+        TokioRuntimeProvider::default()
     ).build().unwrap();
 
-    let lookup_future = resolver.ipv4_lookup(lookup_config.query);
+    let address: IpAddr = if lookup_config.ip_ver == 6 {
+        let future = resolver.ipv6_lookup(lookup_config.query);
+        let response: hickory_resolver::lookup_ip::LookupIp =
+            io_loop.block_on(future).unwrap().into();
 
-    let response: hickory_resolver::lookup_ip::LookupIp = io_loop.block_on(lookup_future).unwrap().into();
+        response.iter().next().expect("no addresses returned!")
+    } else {
+        let future = resolver.ipv4_lookup(lookup_config.query);
+        let response: hickory_resolver::lookup_ip::LookupIp =
+        io_loop.block_on(future).unwrap().into();
 
-    let address: IpAddr = response.iter().next().expect("no addresses returned!");
+        response.iter().next().expect("no addresses returned!")
+    };
 
     // We return the final adresses back to the main function
     address
