@@ -14,6 +14,11 @@ struct FlagStatus {
 
 pub fn parse_config(mut args: Vec<String>) -> Config {
 
+    if args.iter().len() == 0 {
+        println!("No arguments were found!");
+        display_help_info();
+    }
+
     let mut flags: Vec<char> = Vec::new();
 
     // Remove flags from agruments

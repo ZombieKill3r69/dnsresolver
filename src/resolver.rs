@@ -9,6 +9,7 @@ use hickory_resolver::{
     net::runtime::TokioRuntimeProvider,
     config::ResolverConfig,
     config::ServerGroup,
+    lookup_ip::LookupIp,
 };
 
 // Get Config struct from cli_manager
@@ -30,7 +31,6 @@ pub fn resolve(mut lookup_config: Config) -> IpAddr {
     if lookup_config.depth == false {
         lookup_config.query.push_str(".");
     }
-    println!("{}", lookup_config.query);
 
     let io_loop: Runtime = Runtime::new().unwrap();
 
@@ -41,14 +41,12 @@ pub fn resolve(mut lookup_config: Config) -> IpAddr {
 
     let address: IpAddr = if lookup_config.ip_ver == 6 {
         let future = resolver.ipv6_lookup(lookup_config.query);
-        let response: hickory_resolver::lookup_ip::LookupIp =
-            io_loop.block_on(future).unwrap().into();
+        let response: LookupIp = io_loop.block_on(future).unwrap().into();
 
         response.iter().next().expect("no addresses returned!")
     } else {
         let future = resolver.ipv4_lookup(lookup_config.query);
-        let response: hickory_resolver::lookup_ip::LookupIp =
-        io_loop.block_on(future).unwrap().into();
+        let response: LookupIp = io_loop.block_on(future).unwrap().into();
 
         response.iter().next().expect("no addresses returned!")
     };
