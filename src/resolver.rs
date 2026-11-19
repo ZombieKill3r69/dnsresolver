@@ -15,7 +15,7 @@ use hickory_resolver::{
 // Get Config struct from cli_manager
 use crate::cli::Config;
 
-pub fn resolve(mut lookup_config: Config) -> IpAddr {
+pub fn resolve(mut lookup_config: Config) -> String {
 
     // Set default server configuration
     // Will change to to changable by the user but not yet
@@ -44,6 +44,14 @@ pub fn resolve(mut lookup_config: Config) -> IpAddr {
     ).build().unwrap();
 
     // Look at if the user wants ipv4 or ipv6, i know this is janky
+    let address: String = get_address(lookup_config, resolver, io_loop);
+
+    // We return the final adresses back to the main function
+    address
+}
+
+fn get_address(lookup_config: Config, resolver: Resolver<TokioRuntimeProvider>, io_loop: Runtime) -> String {
+
     let address: IpAddr = if lookup_config.ip_ver == 6 {
         let future = resolver.ipv6_lookup(lookup_config.query);
         let response: LookupIp = io_loop.block_on(future).unwrap().into();
@@ -56,7 +64,6 @@ pub fn resolve(mut lookup_config: Config) -> IpAddr {
         response.iter().next().expect("no addresses returned!")
     };
 
-    // We return the final adresses back to the main function
-    address
+    address.to_string()
 }
 
