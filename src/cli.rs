@@ -13,12 +13,14 @@ struct FlagStatus {
 }
 
 pub fn parse_config(mut args: Vec<String>) -> Config {
-
+    
+    // Check if there are no arguments given
     if args.iter().len() == 0 {
         println!("No arguments were found!");
         display_help_info();
     }
 
+    // Create a vector to store flags
     let mut flags: Vec<char> = Vec::new();
 
     // Remove flags from agruments
@@ -29,10 +31,12 @@ pub fn parse_config(mut args: Vec<String>) -> Config {
         args.remove((detect_flags(&args).position).unwrap());
     }
 
+    // Check if flag 'h'
     if flags.contains(&'h') {
         display_help_info();
     }
 
+    // Compile the config to be returned up to main
     Config {
         query:      args[0].clone(),
         ip_ver:     find_ip_version(&flags),
@@ -55,6 +59,7 @@ fn detect_flags(args: &Vec<String>) -> FlagStatus {
         }
     }
 
+    // Give empty struct if there is no flags
     return FlagStatus {
         is_flags: false, 
         position: None, 
@@ -71,6 +76,7 @@ fn find_ip_version(flags: &Vec<char>) -> u8 {
     }
 }
 
+// See if the user wants to use a deeper search
 fn get_lookup_depth(flags: &Vec<char>) -> bool {
 
     if flags.contains(&'d') {
@@ -80,6 +86,7 @@ fn get_lookup_depth(flags: &Vec<char>) -> bool {
     return false;
 }
 
+// Give info about how to use the program to the user
 fn display_help_info() {
 
     let mut output: String = String::new();
