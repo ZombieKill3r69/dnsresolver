@@ -29,6 +29,6 @@ fn format_output(server_address: String, server_output: String) -> String {
     if server_output.contains("Unable") {
         return server_output;
     } else {
-        return format!("Address for {server_address} is {server_output}")
+        return format!("Address for \"{server_address}\" is {server_output}")
     }
 }
