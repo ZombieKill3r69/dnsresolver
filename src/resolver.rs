@@ -15,7 +15,7 @@ use hickory_resolver::{
 // Get Config struct from cli_manager
 use crate::cli::Config;
 
-pub fn resolve(mut lookup_config: Config) -> String {
+pub fn resolve(lookup_config: &Config) -> String {
 
     // Set default server configuration
     // Will change to to changable by the user but not yet
@@ -31,8 +31,9 @@ pub fn resolve(mut lookup_config: Config) -> String {
     };
 
     // Append a dot to the end of the address to tell it to search harder
+    let mut query_address: String = lookup_config.query.clone();
     if lookup_config.depth == false {
-        lookup_config.query.push_str(".");
+        query_address.push_str(".");
     }
 
     let io_loop: Runtime = Runtime::new().unwrap();
@@ -46,7 +47,7 @@ pub fn resolve(mut lookup_config: Config) -> String {
     // Look at if the user wants ipv4 or ipv6, i know this is janky
 
     let address = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        get_address(lookup_config, resolver, io_loop)
+        get_address(query_address, lookup_config.ip_ver.clone(), resolver, io_loop)
     })).unwrap_or_else(|_| "Unable to find assosiated ip address".to_string());
 
     // We return the final adresses back to the main function
@@ -54,14 +55,15 @@ pub fn resolve(mut lookup_config: Config) -> String {
 }
 
 fn get_address(
-    lookup_config: Config,
+    lookup_address: String,
+    ip_version: u8,
     resolver: Resolver<TokioRuntimeProvider>,
     io_loop: Runtime,) -> String {
 
-    let response = if lookup_config.ip_ver == 6 {
-        io_loop.block_on(resolver.ipv6_lookup(lookup_config.query))
+    let response = if ip_version == 6 {
+        io_loop.block_on(resolver.ipv6_lookup(lookup_address))
     } else {
-        io_loop.block_on(resolver.ipv4_lookup(lookup_config.query))
+        io_loop.block_on(resolver.ipv4_lookup(lookup_address))
     };
 
     let address = match response {
